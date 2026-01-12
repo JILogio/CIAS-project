@@ -5,122 +5,67 @@ El sistema permite **crear, consultar y actualizar incidencias**, y **notificar 
 
 ---
 
-## 📌 Arquitectura General
+## Objetivos del Proyecto
 
-La solución sigue un enfoque **event-driven y desacoplado**:
+### Objetivo General
+Diseñar e implementar una aplicación distribuida en la nube que demuestre el uso integrado de servicios AWS para la gestión de incidencias técnicas, aplicando buenas prácticas de escalabilidad, automatización y desacoplamiento.
 
-- **API Gateway (HTTP API)** expone los endpoints REST.
-- **Lambda – API** gestiona las operaciones CRUD sobre incidencias.
-- **DynamoDB** almacena las incidencias y permite consultas eficientes mediante GSIs.
-- **DynamoDB Streams** detecta cambios en los datos.
-- **Lambda – Notifier** procesa eventos del stream y decide si notificar.
-- **SNS** envía alertas por correo electrónico cuando una incidencia es crítica.
-
----
-
-## 🧱 Servicios AWS Utilizados
-
-- Amazon API Gateway (HTTP API)
-- AWS Lambda (2 funciones)
-- Amazon DynamoDB (modo PROVISIONED)
-- DynamoDB Streams
-- Amazon SNS
-- AWS IAM (rol existente `LabRole`)
-- Terraform (Infrastructure as Code)
+### Objetivos Específicos
+- Implementar un backend serverless basado en AWS Lambda y API Gateway.
+- Utilizar Amazon DynamoDB como sistema de persistencia NoSQL optimizado para consultas.
+- Incorporar un mecanismo de notificaciones automáticas mediante Amazon SNS.
+- Desplegar un frontend web ligero utilizando React y Vite, alojado en Amazon S3.
+- Automatizar el despliegue de la infraestructura utilizando Terraform.
+- Garantizar la comunicación segura entre frontend y backend mediante políticas CORS.
 
 ---
 
-## 📂 Estructura del Proyecto
+## Visión General de la Arquitectura
 
-```text
-cias/
- ├── Terraform/
- │   ├── main.tf
- │   ├── variables.tf
- │   ├── outputs.tf
- │   ├── versions.tf
- └── Lambda/
-     ├── lambda_api/
-     │   └── index.mjs
-     └── lambda_notifier/
-         └── index.mjs
-```
+La arquitectura del sistema CIAS se basa en un enfoque **event-driven**, separando claramente las responsabilidades de cada componente:
 
-## 🗄️ Modelo de Datos (DynamoDB)
-
-**Tabla:** `CIAS_Incidents`
-
-### Clave primaria
-- **Partition Key:** `incidentId` (String)
-- **Sort Key:** `createdAt` (String – ISO 8601)
-
-### Atributos principales
-- `title` (String)
-- `description` (String)
-- `severity` (String: `low | medium | high`)
-- `service` (String)
-- `reportedBy` (String)
-- `status` (String: `open | in_progress | closed`)
-- `updatedAt` (String)
-
-### Índices Secundarios Globales (GSI)
-
-#### GSI_Severity_CreatedAt
-- **Partition Key:** `severity`
-- **Sort Key:** `createdAt`
-- **Uso:** consultar incidencias por severidad ordenadas por fecha.
-
-#### GSI_Service_CreatedAt
-- **Partition Key:** `service`
-- **Sort Key:** `createdAt`
-- **Uso:** consultar incidencias por servicio afectado.
+- El **Frontend** proporciona la interfaz de usuario y se despliega como sitio estático en Amazon S3.
+- El **Backend API** expone endpoints REST a través de API Gateway y procesa las solicitudes mediante una función Lambda.
+- **DynamoDB** actúa como base de datos principal para el almacenamiento de incidencias.
+- **DynamoDB Streams** detecta cambios en los datos y dispara eventos automáticamente.
+- Una segunda función **Lambda Notifier** procesa estos eventos y decide si se debe generar una alerta.
+- **Amazon SNS** se encarga del envío de notificaciones por correo electrónico.
+- **Terraform** gestiona toda la infraestructura como código, facilitando el despliegue en distintas cuentas AWS.
 
 ---
 
-## 🔌 Endpoints Disponibles
+## Características Principales
 
-### Health Check
-```
-GET /health
-```
-
-### Crear incidencia
-```
-POST /incidents
-```
-
-### Consultar incidencias
-```
-GET /incidents?severity=high
-```
-
-### Actualizar estado
-```
-PATCH /incidents/{id}
-```
+- Arquitectura completamente serverless
+- Desacoplamiento entre lógica de negocio y notificaciones
+- Escalabilidad automática
+- Bajo costo operativo
+- Despliegue reproducible
+- Enfoque académico y práctico
 
 ---
 
-## 🚨 Notificaciones (SNS)
+## Alcance del Proyecto
 
-- Se envían solo cuando:
-  - `severity = high`
-  - `status = open`
-- Activadas mediante **DynamoDB Streams** y Lambda Notifier.
+El alcance del proyecto se centra en el **backend funcional y el frontend demostrativo**, permitiendo validar el flujo completo de una incidencia desde su creación hasta la notificación automática. No se incluyen mecanismos avanzados de autenticación ni interfaces gráficas complejas, ya que el foco principal es el **diseño arquitectónico y la integración de servicios en la nube**.
 
 ---
 
-## ⚙️ Despliegue con Terraform
+## Contexto Académico
 
-```
-terraform init
-terraform apply \
-  -var="region=us-east-1" \
-  -var="alert_email=correo@dominio.com" \
-  -var="labrole_arn=arn:aws:iam::<ACCOUNT_ID>:role/LabRole"
-```
-Poner las variables de acuerdo a la cuenta de AWS
-
-⚠️ Confirmar la suscripción SNS por email.
+Este proyecto ha sido desarrollado con fines **educativos**, permitiendo aplicar los conceptos vistos en clase relacionados con:
+- Servicios en la nube
+- Arquitecturas distribuidas
+- Serverless computing
+- Infraestructura como código
+- Sistemas orientados a eventos
 
 ---
+
+## Conclusión
+
+El **Cloud Incident Alert System (CIAS)** demuestra cómo es posible construir una solución moderna, escalable y eficiente utilizando servicios gestionados de AWS. El proyecto integra múltiples tecnologías cloud de forma coherente, sirviendo como un caso de estudio práctico para el desarrollo de aplicaciones distribuidas en la nube.
+
+## Licencia
+
+Este proyecto se distribuye bajo la licencia MIT. Ver el archivo `LICENSE` para más información.

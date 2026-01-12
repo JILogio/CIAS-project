@@ -1,13 +1,6 @@
-# Backend
 .terraform
 .terraform.lock.hcl
 lambda_api.zip
 lambda_notifier.zip
 terraform.tfstate
 terraform.tfstate.backup
-
-#Frontend
-.vscode/
-node_modules/
-build/
-dist/

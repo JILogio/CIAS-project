@@ -162,6 +162,12 @@ resource "aws_apigatewayv2_route" "patch_incident" {
   target    = "integrations/${aws_apigatewayv2_integration.lambda_api.id}"
 }
 
+resource "aws_apigatewayv2_route" "get_incidents_all" {
+  api_id    = aws_apigatewayv2_api.http_api.id
+  route_key = "GET /incidents/all"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_api.id}"
+}
+
 resource "aws_apigatewayv2_route" "get_health" {
   api_id    = aws_apigatewayv2_api.http_api.id
   route_key = "GET /health"
@@ -181,4 +187,19 @@ resource "aws_lambda_permission" "allow_apigw_invoke" {
   function_name = aws_lambda_function.api.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.http_api.execution_arn}/*/*"
+}
+
+resource "aws_apigatewayv2_api" "http_api" {
+  name          = "${var.project_name}-http-api"
+  protocol_type = "HTTP"
+
+  cors_configuration {
+    allow_origins = [
+      "http://localhost:3000",
+      "http://localhost:5173"
+    ]
+    allow_methods = ["GET", "POST", "PATCH", "OPTIONS"]
+    allow_headers = ["content-type", "authorization", "x-requested-with"]
+    max_age       = 3600
+  }
 }

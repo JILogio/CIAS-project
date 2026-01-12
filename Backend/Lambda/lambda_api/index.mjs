@@ -65,6 +65,39 @@ export const handler = async (event) => {
     return json(201, { message: "Incidencia creada", item });
   }
 
+  // GET /incidents/all?limit=50&nextToken=...
+  // Devuelve todas las incidencias (Scan) con paginación
+  if (method === "GET" && path.endsWith("/incidents/all")) {
+    const qs = event.queryStringParameters || {};
+    const limit = Math.min(parseInt(qs.limit || "50", 10), 200); // max 200 por seguridad
+
+    // nextToken viene en base64 (opcional)
+    let ExclusiveStartKey = undefined;
+    if (qs.nextToken) {
+      try {
+        ExclusiveStartKey = JSON.parse(Buffer.from(qs.nextToken, "base64").toString("utf8"));
+      } catch {
+        return json(400, { error: "nextToken inválido" });
+      }
+    }
+
+    const result = await ddb.send(new ScanCommand({
+      TableName: TABLE_NAME,
+      Limit: limit,
+      ExclusiveStartKey
+    }));
+
+    const nextToken = result.LastEvaluatedKey
+      ? Buffer.from(JSON.stringify(result.LastEvaluatedKey), "utf8").toString("base64")
+      : null;
+
+    return json(200, {
+      count: result.Count ?? 0,
+      items: result.Items ?? [],
+      nextToken
+   });
+  }
+
   // GET /incidents?severity=high
   if (method === "GET" && path.endsWith("/incidents")) {
     const qs = event.queryStringParameters || {};

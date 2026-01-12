@@ -134,6 +134,16 @@ resource "aws_lambda_event_source_mapping" "ddb_stream_to_notifier" {
 resource "aws_apigatewayv2_api" "http_api" {
   name          = "${var.project_name}-http-api"
   protocol_type = "HTTP"
+
+  cors_configuration {
+    allow_origins = [
+      "http://localhost:3000",
+      "http://localhost:5173"
+    ]
+    allow_methods = ["GET", "POST", "PATCH", "OPTIONS"]
+    allow_headers = ["content-type", "authorization", "x-requested-with"]
+    max_age       = 3600
+  }
 }
 
 resource "aws_apigatewayv2_integration" "lambda_api" {
@@ -187,19 +197,4 @@ resource "aws_lambda_permission" "allow_apigw_invoke" {
   function_name = aws_lambda_function.api.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.http_api.execution_arn}/*/*"
-}
-
-resource "aws_apigatewayv2_api" "http_api_cors" {
-  name          = "${var.project_name}-http-api"
-  protocol_type = "HTTP"
-
-  cors_configuration {
-    allow_origins = [
-      "http://localhost:3000",
-      "http://localhost:5173"
-    ]
-    allow_methods = ["GET", "POST", "PATCH", "OPTIONS"]
-    allow_headers = ["content-type", "authorization", "x-requested-with"]
-    max_age       = 3600
-  }
 }

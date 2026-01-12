@@ -3,7 +3,8 @@ import {
   DynamoDBDocumentClient,
   PutCommand,
   QueryCommand,
-  UpdateCommand
+  UpdateCommand,
+  ScanCommand
 } from "@aws-sdk/lib-dynamodb";
 import crypto from "crypto";
 
@@ -65,8 +66,7 @@ export const handler = async (event) => {
     return json(201, { message: "Incidencia creada", item });
   }
 
-  // GET /incidents/all?limit=50&nextToken=...
-  // Devuelve todas las incidencias (Scan) con paginación
+  // GET /incidents/all?limit=   (Scan) con paginación
   if (method === "GET" && path.endsWith("/incidents/all")) {
     const qs = event.queryStringParameters || {};
     const limit = Math.min(parseInt(qs.limit || "50", 10), 200); // max 200 por seguridad

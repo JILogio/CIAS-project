@@ -189,7 +189,7 @@ resource "aws_lambda_permission" "allow_apigw_invoke" {
   source_arn    = "${aws_apigatewayv2_api.http_api.execution_arn}/*/*"
 }
 
-resource "aws_apigatewayv2_api" "http_api" {
+resource "aws_apigatewayv2_api" "http_api_cors" {
   name          = "${var.project_name}-http-api"
   protocol_type = "HTTP"
 

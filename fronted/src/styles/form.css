@@ -1,0 +1,40 @@
+.card {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+form input,
+form select {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+form button {
+  width: 100%;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.7rem;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+form button:hover {
+  background-color: #1d4ed8;
+}
+
+form textarea {
+  width: 100%;
+  min-height: 80px;
+  margin-bottom: 1rem;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  resize: vertical;
+  font-family: inherit;
+}

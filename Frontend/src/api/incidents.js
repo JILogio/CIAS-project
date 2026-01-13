@@ -5,6 +5,11 @@ export async function getIncidents() {
   return response.json()
 }
 
+export async function getAllIncidents(limit = 20) {
+  const response = await fetch(`${API_URL}/incidents/all?limit=${limit}`)
+  return response.json()
+}
+
 export async function createIncident(data) {
   const response = await fetch(`${API_URL}/incidents`, {
     method: 'POST',

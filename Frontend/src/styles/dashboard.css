@@ -1,5 +1,18 @@
 .dashboard {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
+  display: flex;
+  flex-direction: row;
   gap: 2rem;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.dashboard-left {
+  flex: 0 0 400px;
+}
+
+.dashboard-right {
+  flex: 1;
 }

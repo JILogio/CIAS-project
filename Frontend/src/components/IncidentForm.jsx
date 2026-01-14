@@ -2,35 +2,60 @@ import { useState } from 'react'
 import { createIncident } from '../api/incidents'
 import '../styles/form.css'
 
-function IncidentForm() {
+function IncidentForm({ onIncidentCreated }) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [severity, setSeverity] = useState('low')
   const [service, setService] = useState('')
   const [reportedBy, setReportedBy] = useState('')
+  const [message, setMessage] = useState('')
+  const [messageType, setMessageType] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setMessage('')
 
-    await createIncident({
-      title,
-      description,
-      severity,
-      service,
-      reportedBy,
-    })
+    try {
+      await createIncident({
+        title,
+        description,
+        severity,
+        service,
+        reportedBy,
+      })
 
-    // Limpiar formulario
-    setTitle('')
-    setDescription('')
-    setSeverity('low')
-    setService('')
-    setReportedBy('')
+      setMessage('Incidencia creada exitosamente.')
+      setMessageType('success')
+      setTitle('')
+      setDescription('')
+      setSeverity('low')
+      setService('')
+      setReportedBy('')
+      setTimeout(() => {
+        setMessage('')
+        setMessageType('')
+      }, 5000)
+      if (onIncidentCreated) onIncidentCreated()
+    } catch (error) {
+      setMessage('Error al crear la incidencia. Inténtalo de nuevo.')
+      setMessageType('error')
+      console.error('Error creating incident:', error)
+      setTimeout(() => {
+        setMessage('')
+        setMessageType('')
+      }, 5000)
+    }
   }
 
   return (
     <form className="card" onSubmit={handleSubmit}>
       <h2>Nueva incidencia</h2>
+
+      {message && (
+        <div className={`alert alert-${messageType}`}>
+          {message}
+        </div>
+      )}
 
       <input
         type="text"

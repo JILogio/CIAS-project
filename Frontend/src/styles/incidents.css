@@ -1,22 +1,47 @@
+.dashboard-right {
+  max-height: 600px; /* Limitar altura para igualar formulario */
+  overflow-y: auto; /* Scroll si es necesario */
+}
+
 .incident-card {
   background-color: white;
-  padding: 1rem;
+  padding: 0.75rem;
   border-radius: 10px;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.06);
   border-left: 6px solid;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.incident-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.incident-info span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
 }
 
 .incident-title {
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  color: #1f2937;
 }
 
-.incident-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.85rem;
+.incident-severity {
+  color: #ef4444; /* Rojo para high, ajustar en JS si necesario */
+}
+
+.incident-description {
+  font-size: 0.8rem;
   color: #6b7280;
+  margin-top: 0.25rem;
 }
 
 /* Colores por severidad */
@@ -30,4 +55,58 @@
 
 .incident-card.high {
   border-color: #ef4444;
+}
+
+/* Filtro */
+.filter-container {
+  margin-bottom: 1rem;
+}
+
+.filter-container label {
+  margin-right: 0.5rem;
+  font-weight: 500;
+}
+
+.filter-container select {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #d1d5db;
+}
+
+/* Lista de incidencias */
+.incident-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Paginación */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.pagination button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  margin: 0 0.5rem;
+  cursor: pointer;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.pagination button:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-weight: 500;
 }
